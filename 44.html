@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>D3 Step 44</title>
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 960px;
+  height: 500px;
+  position: relative;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+path.slice{
+    stroke-width:2px;
+}
+
+text {
+  font: 12px sans-serif;
+}
+</style>
+<body>
+<form>
+<label><input type="radio" name="dataset" id="dataset" value="total" checked> Total</label>
+<label><input type="radio" name="dataset" id="dataset" value="option1"> Option 1</label>
+<label><input type="radio" name="dataset" id="dataset" value="option2"> Option 2</label>
+</form>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+d3.select("input[value=\"total\"]").property("checked", true);
+
+var svg = d3.select("body")
+    .append("svg")
+    .append("g")
+
+svg.append("g")
+    .attr("class", "slices");
+
+
+var width = 960,
+    height = 450,
+    radius = Math.min(width, height) / 2;
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) {
+        return d.value;
+    });
+
+var arc = d3.svg.arc()
+    .outerRadius(radius * 0.8)
+    .innerRadius(radius * 0.0);
+
+var outerArc = d3.svg.arc()
+    .innerRadius(radius * 0.9)
+    .outerRadius(radius * 0.9);
+
+var legendRectSize = (radius * 0.05);
+var legendSpacing = radius * 0.02;
+
+svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var colorRange = d3.scale.category20();
+var color = d3.scale.ordinal()
+    .range(colorRange.range());
+
+var datasetTotal = [];
+var datasetOption1 = [];
+var datasetOption2 = [];
+datasetTotal = [
+        {label:"<=2.5", value:13}, 
+        {label:"2.5-3", value:39}, 
+        {label:"3-3.5", value:8},
+        {label:"3.5-4", value:0},
+        {label:">4", value:0},
+        ];
+
+datasetOption1 = [
+       {label:"<=2.5", value:1}, 
+        {label:"2.5-3", value:7}, 
+        {label:"3-3.5", value:26},
+        {label:"3.5-4", value:13},
+        {label:">4", value:3},
+        ];
+
+datasetOption2 = [
+        {label:"<=2.5", value:5}, 
+        {label:"2.5-3", value:28}, 
+        {label:"3-3.5", value:14},
+        {label:"3.5-4", value:3},
+        {label:">4", value:0},
+        ];
+
+change(datasetTotal);
+
+d3.selectAll("input")
+    .on("change", selectDataset);
+
+function selectDataset()
+{
+    var value = this.value;
+    if (value == "total")
+    {
+        change(datasetTotal);
+    }
+    else if (value == "option1")
+    {
+        change(datasetOption1);
+    }
+    else if (value == "option2")
+    {
+        change(datasetOption2);
+    }
+}
+
+var timeout = setTimeout(function() {
+    d3.select("input[value=\"option1\"]").property("checked", true).each(change3);
+  }, 5000);
+
+
+  function change3() {
+    clearTimeout(timeout);
+    change(datasetOption1);
+  }
+
+var timeout1 = setTimeout(function() {
+    d3.select("input[value=\"option2\"]").property("checked", true).each(change4);
+  
+  }, 10000);
+
+function change4() {
+    clearTimeout(timeout1);
+    change(datasetOption2);
+}
+
+function change(data) {
+
+    var slice = svg.select(".slices").selectAll("path.slice")
+        .data(pie(data), function(d){ return d.data.label });
+
+    slice.enter()
+        .insert("path")
+        .style("fill", function(d) { return color(d.data.label); })
+        .attr("class", "slice");
+
+    slice
+        .transition().duration(1000)
+        .attrTween("d", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                return arc(interpolate(t));
+            };
+        })
+    
+
+    slice.exit()
+        .remove();
+
+    var legend = svg.selectAll('.legend')
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', function(d, i) {
+            var height = legendRectSize + legendSpacing;
+            var offset =  height * color.domain().length / 2;
+            var horz = -3 * legendRectSize;
+            var vert = i * height - offset;
+            return 'translate(' +10*horz + ',' + vert + ')';
+        });
+
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', color)
+        .style('stroke', color);
+
+    legend.append('text')
+        .attr('x', legendRectSize + legendSpacing)
+        .attr('y', legendRectSize - legendSpacing)
+        .text(function(d) { return d; });
+
+};
+</script>
+</body>
