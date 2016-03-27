@@ -1,0 +1,46 @@
+<!doctype>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.css" rel="stylesheet">
+
+<body>
+
+<div id="content">
+	<div id="chart"></div>
+</div>
+
+<script>
+
+var tv = 500;
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"), //Choose element of html page to which the properties are being applied
+	width: 900, //width
+	height: 500, //height
+	renderer: 'line', //type
+	series: new Rickshaw.Series.FixedDuration([{ name: 'two' }], undefined, { //taking data 'two'
+		timeInterval: tv, //update interval duration
+		maxDataPoints: 100
+	}) 
+} );
+
+graph.render();
+//Add data to generate and keep it running
+
+var i = 0;
+var update = setInterval( function() {
+	//Generate random data
+	var data = { one: Math.floor(Math.random() * 40) + 120 }; 
+
+	var randInt = Math.floor(Math.random()*100);
+	data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
+	data.three = randInt + 300;
+
+	graph.series.addData(data); //add data to be rendered on the screen
+	graph.render(); //draw or redraw the graph
+
+}, tv );
+
+</script>
+
+</body>
