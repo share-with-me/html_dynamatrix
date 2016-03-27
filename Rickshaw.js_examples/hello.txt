@@ -1,2 +1,0 @@
-README:
-This folder consists of files that have been developed using Rickshaw.js, a visualisation library built in javasscript by shutterstock on top of d3.js which helps in analysis of time series graphs.
