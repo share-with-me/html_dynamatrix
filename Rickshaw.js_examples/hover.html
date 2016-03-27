@@ -29,7 +29,7 @@ var random = new Rickshaw.Fixtures.RandomData(100); //Generates random objects h
 for (var i = 0; i < 100; i++) {
 	random.addData(seriesData); //Add the 100 elements each generated above to the four arrays in seriesData array
 }
-
+console.log(seriesData[0][0]);
 //To understand, how above code works, uncomment the following. basically, the code generates 100 datapoints each for each of the arrays
 /*
 console.log(seriesData[0][0]);
