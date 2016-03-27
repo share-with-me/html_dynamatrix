@@ -1,0 +1,81 @@
+<!doctype>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.css" rel="stylesheet">
+
+<style>
+		.detail_swatch { float: right; display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 0 }
+		.rickshaw_graph .detail .date { color: #a0a0a0 }
+	</style>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+<script>
+
+
+var seriesData = [ [], [], [] , [] ]; //Holds data points for 4 cities or entities
+var random = new Rickshaw.Fixtures.RandomData(100); //Generates random objects having x and y values less than 100
+
+for (var i = 0; i < 100; i++) {
+	random.addData(seriesData); //Add the 100 elements each generated above to the four arrays in seriesData array
+}
+
+//To understand, how above code works, uncomment the following. basically, the code generates 100 datapoints each for each of the arrays
+/*
+console.log(seriesData[0][0]);
+console.log(seriesData[1]);
+console.log(seriesData[2]);
+console.log(seriesData[3]);
+*/
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"), //get the element of html page
+	width: 960, //width
+	height: 500, //height
+	renderer: 'line', //type
+	series: [
+		{
+			color: "red",
+			data: seriesData[0],
+			name: 'New York'
+		}, {
+			color: "green",
+			data: seriesData[1],
+			name: 'London'
+		}, {
+			color: "blue",
+			data: seriesData[2],
+			name: 'Tokyo'
+		},
+		{
+			color: "teal",
+			data: seriesData[3],
+			name: 'Delhi'
+		}
+	]
+} );
+
+graph.render(); //redraw or render the graph
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	graph: graph,
+	formatter: function(series, x, y) {
+		var date = '<span class="date">' + new Date(x * 1000).toUTCString() + '</span>'; //Date format
+		var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>'; //Color
+		var content = swatch + series.name + ": " + parseInt(y) + '<br>' + date; //Type name
+		return content;
+	}
+} );
+
+</script>
+
+</body>
