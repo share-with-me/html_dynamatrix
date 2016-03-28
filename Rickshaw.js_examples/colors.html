@@ -1,0 +1,48 @@
+<!doctype>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.css" rel="stylesheet">
+
+<body>
+
+<script>
+
+	var palette = new Rickshaw.Color.Palette( { scheme:'spectrum2000'} ); //Choose a color scheme
+
+	var seriesData = []; //array to hold randomly generated data
+
+	palette.scheme.forEach( function() {
+		seriesData.push([]); //Each array will hold different colors of that scheme
+	} );
+	/*To understand the above statement, uncomment the following and comment the above code palette.scheme.....}); */
+	//seriesData.push([])
+
+	var random = new Rickshaw.Fixtures.RandomData(150); //generate objects with x and y values contained within 150
+
+	for (var i = 0; i < 100; i++) {
+		random.addData(seriesData); //Add 100 points to seriesData
+	}
+ 
+	var element = document.createElement('div'); //Create an element div
+	document.body.appendChild(element); //Append to body
+
+	var series = []; //the series array which will hold values that will be used for plotting
+
+	seriesData.forEach( function(s) {
+		series.push( {
+			data: s, //Data for each segment of the color scheme
+			color: palette.color() //the color 
+		} );
+	} );
+	
+	var graph = new Rickshaw.Graph( {
+		element: element,//Consider div where property is applied
+		series: series //the series which will be used for plotting
+	} );
+
+	graph.render();
+
+</script>
+
+</body>
