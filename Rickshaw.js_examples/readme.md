@@ -1,0 +1,1 @@
+This directory makes use of rickshaw.js, a time series analysis visualisation library built on top of d3.js by shutterstock. It helps in rendering a time series graph.
