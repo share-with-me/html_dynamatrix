@@ -1,0 +1,21 @@
+<!--Reference has been made with Dimple.js documentations and a datset from their home page-->
+<html>
+<div id="chartContainer">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.2.0.min.js"></script>
+ <script type="text/javascript">
+    var svg = dimple.newSvg("#chartContainer", 590, 400);
+    d3.tsv("example_data.tsv", function (data) {
+      data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"]); //filter on the data you want ..in this case, data classified is under owner having two different values - 'Aperture' and 'Black Mesa'
+      var myChart = new dimple.chart(svg, data); //chart 
+      myChart.setBounds(60, 30, 505, 305);
+      var x = myChart.addCategoryAxis("x", "Month");
+      x.addOrderRule("Date");
+      myChart.addMeasureAxis("y", "Unit Sales");
+      myChart.addSeries("Channel", dimple.plot.line); //type of chart
+      myChart.addLegend(60, 10, 500, 20, "left"); //orientation and position of legend
+      myChart.draw(); //render or draw the graph
+    });
+  </script>
+</div>
+</html>
